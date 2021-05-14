@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 from flags import *
 
 
-def prepareDL(url, path):
+# Makes crude array of strings containing image url (and other junk):
+def prepareDL(url):
     response = get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     
@@ -19,6 +20,7 @@ def prepareDL(url, path):
             images.append(i)
     return images
 
+# Checks filetype (for flags -i and -e)
 def check_filetype(filetype, include_exclude):
     if include_exclude[-1] == "i":
         for i in include_exclude[0]:
@@ -29,10 +31,9 @@ def check_filetype(filetype, include_exclude):
             if filetype[1:] == i: return 1
         return 0 
 
-
+# Checks if filename is duplicate:
 def check_folder(check, imgname):
     if check == 0: 
-        print("x")
         return 1
 
     try:
@@ -42,11 +43,12 @@ def check_folder(check, imgname):
     except:
         return 1      
 
+# URL and path prep and download
 def download(url, path, time, check, include_exclude):
     https = "https:"
     path_slash = "/"
 #   path_slash = "\\"
-    images = prepareDL(url, path)
+    images = prepareDL(url)
 
     for i in images[::2]:
         slash = i.find("//")
@@ -65,6 +67,7 @@ def download(url, path, time, check, include_exclude):
             sleep(time)
     print("Done")    
 
+# Check flags:
 args = parse()
 wait = args.wait
 wait_miliseconds = args.wait_miliseconds
